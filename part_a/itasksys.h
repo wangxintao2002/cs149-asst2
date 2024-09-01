@@ -1,6 +1,7 @@
 #ifndef _ITASKSYS_H
 #define _ITASKSYS_H
 #include <vector>
+#include <thread>
 
 typedef int TaskID;
 
@@ -66,5 +67,9 @@ class ITaskSystem {
           runXXX calls are done.
          */
         virtual void sync() = 0;
+
+        const int numThreads() { return num_threads_; }
+    private:
+        int num_threads_;
 };
 #endif
