@@ -3,7 +3,10 @@
 
 #include <condition_variable>
 #include <cstdio>
+#include <cassert>
 #include <mutex>
+#include <atomic>
+#include <functional>
 #include <queue>
 #include <thread>
 #include "itasksys.h"
@@ -69,10 +72,9 @@ class TaskSystemParallelThreadPoolSpinning: public ITaskSystem {
         int cur_task_{0};
         int num_total_tasks_{0};
         IRunnable* runnable_;
-        bool work_to_do_{false};
         bool stop_{false};
         std::condition_variable barrier_{};
-        int finished_{0};
+        std::atomic<int> finished_{0};
 };
 
 /*
@@ -90,18 +92,17 @@ class TaskSystemParallelThreadPoolSleeping: public ITaskSystem {
         TaskID runAsyncWithDeps(IRunnable* runnable, int num_total_tasks,
                                 const std::vector<TaskID>& deps);
         void sync();
-        void pullTasks();
     private:
-        std::thread* thread_pool_;
-        std::mutex mutex_{};
-        int cur_task_{0};
-        int num_total_tasks_{0};
-        IRunnable* runnable_;
-        bool work_to_do_{false};
-        bool stop_{false};
-        std::condition_variable cond_{};
-        std::condition_variable barrier_{};
-        int finished_{0};
+        std::condition_variable producer;
+        std::condition_variable consumer;
+        std::vector<std::thread> thread_vector;
+        bool finished;
+        int num_total_tasks;
+        int remain_tasks;
+        int num_threads;
+        int unfinished_tasks;
+        IRunnable *runnable;
+        std::mutex task_mutex;
 };
 
 #endif

@@ -121,7 +121,7 @@ int main(int argc, char** argv)
     int opt;
     static struct option long_options[] = {
         {"num_threads",           1, 0,  'n'},
-        {"num_timing_iterations", 1, 0,  'i'},
+        {"num_timing_iterations", 3, 0,  'i'},
         {"help",                  0, 0,  '?'},
     };
 
@@ -176,7 +176,7 @@ int main(int argc, char** argv)
                 if (!result.passed) {
                     printf("ERROR: Results did not pass correctness check! (iter=%d, ref_impl=%s)\n",
                         j, t->name());
-                    // exit(1);
+                    exit(1);
                 }
 
                 minT = std::min(minT, result.time);
