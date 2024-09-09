@@ -629,8 +629,11 @@ TestResults pingPongTest(ITaskSystem* t, bool equal_work, bool do_async,
             t->run(runnables[i], num_tasks);
         }
     }
-    if (do_async)
+    if (do_async) {
+        // printf("sync\n");
         t->sync();
+        // printf("finish sync\n");
+    }
     double end_time = CycleTimer::currentSeconds();
 
     // Correctness validation
